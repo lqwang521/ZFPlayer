@@ -48,7 +48,7 @@ A simple video player for iOS, based on AVPlayer. Support the vertical, horizont
 ### CocoaPods    
 
 ```ruby
-pod 'ZFPlayer'
+pod 'HTMIZFPlayer'
 ```
 
 Then, run the following command:
