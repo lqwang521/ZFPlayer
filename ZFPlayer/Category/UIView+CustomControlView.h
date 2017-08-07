@@ -138,7 +138,7 @@
 /** 
  * 视频加载失败
  */
-- (void)zf_playerItemStatusFailed:(NSError *)error;
+- (void)zf_playerItemStatusFailed:(NSString *)state;
 
 /**
  * 小屏播放

@@ -536,7 +536,11 @@ typedef NS_ENUM(NSInteger, PanDirection){
                 }
                 self.player.muted = self.mute;
             } else if (self.player.currentItem.status == AVPlayerItemStatusFailed) {
-                self.state = ZFPlayerStateFailed;
+                if ([[self getNetWorkStates] isEqualToString:@"notReachable"]) {
+                    self.state = ZFPlayerStateNoNetWork;
+                }else{
+                    self.state = ZFPlayerStateFailed;
+                }
             }
         } else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
             
@@ -569,7 +573,56 @@ typedef NS_ENUM(NSInteger, PanDirection){
         }
     }
 }
-
+/**
+ 判断网络状态
+ 
+ */
+- (NSString *)getNetWorkStates{
+    // 状态栏是由当前app控制的，首先获取当前app
+    UIApplication *app = [UIApplication sharedApplication];
+    
+    NSArray *children = [[[app valueForKeyPath:@"statusBar"] valueForKeyPath:@"foregroundView"] subviews];
+    
+    int type = 0;
+    for (id child in children) {
+        if ([child isKindOfClass:[NSClassFromString(@"UIStatusBarDataNetworkItemView") class]]) {
+            type = [[child valueForKeyPath:@"dataNetworkType"] intValue];
+        }
+    }
+    
+    NSString *stateString = @"wifi";
+    
+    switch (type) {
+        case 0:
+            stateString = @"notReachable";
+            break;
+            
+        case 1:
+            stateString = @"2G";
+            break;
+            
+        case 2:
+            stateString = @"3G";
+            break;
+            
+        case 3:
+            stateString = @"4G";
+            break;
+            
+        case 4:
+            stateString = @"LTE";
+            break;
+            
+        case 5:
+            stateString = @"wifi";
+            break;
+            
+        default:
+            break;
+    }
+    
+    return stateString;
+}
 #pragma mark - tableViewContentOffset
 
 /**
@@ -1271,8 +1324,10 @@ typedef NS_ENUM(NSInteger, PanDirection){
         // 隐藏占位图
         [self.controlView zf_playerItemPlaying];
     } else if (state == ZFPlayerStateFailed) {
-        NSError *error = [self.playerItem error];
-        [self.controlView zf_playerItemStatusFailed:error];
+        //        NSError *error = [self.playerItem error];
+        [self.controlView zf_playerItemStatusFailed:@"失败"];
+    }else if (state == ZFPlayerStateNoNetWork){
+        [self.controlView zf_playerItemStatusFailed:@"无网络"];
     }
 }
 
@@ -1467,6 +1522,12 @@ typedef NS_ENUM(NSInteger, PanDirection){
             if ([self.delegate respondsToSelector:@selector(zf_playerBackAction)]) { [self.delegate zf_playerBackAction]; }
         } else {
             [self interfaceOrientation:UIInterfaceOrientationPortrait];
+            
+            //新增代码  效果，横屏直接返回
+            // player加到控制器上，只有一个player时候
+            [self pause];
+            if ([self.delegate respondsToSelector:@selector(zf_playerBackAction)]) { [self.delegate zf_playerBackAction]; }
+            //以上新增代码
         }
     }
 }

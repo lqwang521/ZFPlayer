@@ -26,7 +26,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "UIView+CustomControlView.h"
 #import "MMMaterialDesignSpinner.h"
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored"-Wdeprecated-declarations"
 
@@ -184,12 +183,12 @@ static const CGFloat ZFPlayerControlBarAutoFadeOutTimeInterval = 0.35f;
         make.width.height.mas_equalTo(40);
     }];
 
-    [self.downLoadBtn mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.mas_equalTo(40);
-        make.height.mas_equalTo(49);
-        make.trailing.equalTo(self.topImageView.mas_trailing).offset(-10);
-        make.centerY.equalTo(self.backBtn.mas_centerY);
-    }];
+//    [self.downLoadBtn mas_makeConstraints:^(MASConstraintMaker *make) {
+//        make.width.mas_equalTo(40);
+//        make.height.mas_equalTo(49);
+//        make.trailing.equalTo(self.topImageView.mas_trailing).offset(-10);
+//        make.centerY.equalTo(self.backBtn.mas_centerY);
+//    }];
 
     [self.resolutionBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.mas_equalTo(40);
@@ -268,7 +267,7 @@ static const CGFloat ZFPlayerControlBarAutoFadeOutTimeInterval = 0.35f;
     
     [self.failBtn mas_makeConstraints:^(MASConstraintMaker *make) {
         make.center.equalTo(self);
-        make.width.mas_equalTo(130);
+        make.width.mas_equalTo(200);
         make.height.mas_equalTo(33);
     }];
     
@@ -395,10 +394,10 @@ static const CGFloat ZFPlayerControlBarAutoFadeOutTimeInterval = 0.35f;
 }
 
 - (void)fullScreenBtnClick:(UIButton *)sender {
-    sender.selected = !sender.selected;
-    if ([self.delegate respondsToSelector:@selector(zf_controlView:fullScreenAction:)]) {
-        [self.delegate zf_controlView:self fullScreenAction:sender];
-    }
+//    sender.selected = !sender.selected;
+//    if ([self.delegate respondsToSelector:@selector(zf_controlView:fullScreenAction:)]) {
+//        [self.delegate zf_controlView:self fullScreenAction:sender];
+//    }
 }
 
 - (void)repeatBtnClick:(UIButton *)sender {
@@ -736,8 +735,8 @@ static const CGFloat ZFPlayerControlBarAutoFadeOutTimeInterval = 0.35f;
 - (UIButton *)fullScreenBtn {
     if (!_fullScreenBtn) {
         _fullScreenBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_fullScreenBtn setImage:ZFPlayerImage(@"ZFPlayer_fullscreen") forState:UIControlStateNormal];
-        [_fullScreenBtn setImage:ZFPlayerImage(@"ZFPlayer_shrinkscreen") forState:UIControlStateSelected];
+//        [_fullScreenBtn setImage:ZFPlayerImage(@"ZFPlayer_fullscreen") forState:UIControlStateNormal];
+//        [_fullScreenBtn setImage:ZFPlayerImage(@"ZFPlayer_shrinkscreen") forState:UIControlStateSelected];
         [_fullScreenBtn addTarget:self action:@selector(fullScreenBtnClick:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _fullScreenBtn;
@@ -794,7 +793,7 @@ static const CGFloat ZFPlayerControlBarAutoFadeOutTimeInterval = 0.35f;
 - (UIButton *)failBtn {
     if (!_failBtn) {
         _failBtn = [UIButton buttonWithType:UIButtonTypeSystem];
-        [_failBtn setTitle:@"加载失败,点击重试" forState:UIControlStateNormal];
+        [_failBtn setTitle:@"视频格式暂不支持" forState:UIControlStateNormal];
         [_failBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
         _failBtn.titleLabel.font = [UIFont systemFontOfSize:14.0];
         _failBtn.backgroundColor = RGBA(0, 0, 0, 0.7);
@@ -1069,8 +1068,13 @@ static const CGFloat ZFPlayerControlBarAutoFadeOutTimeInterval = 0.35f;
 }
 
 /** 视频加载失败 */
-- (void)zf_playerItemStatusFailed:(NSError *)error {
+- (void)zf_playerItemStatusFailed:(NSString *)state {
     self.failBtn.hidden = NO;
+    if ([state isEqualToString:@"失败"]) {
+        [self.failBtn setTitle:@"视频格式暂不支持" forState:UIControlStateNormal];
+    }else if ([state isEqualToString:@"无网络"]){
+        [self.failBtn setTitle:@"网络异常，请检查网络" forState:UIControlStateNormal];
+    }
 }
 
 /** 加载的菊花 */

@@ -53,7 +53,8 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
     ZFPlayerStateBuffering,  // 缓冲中
     ZFPlayerStatePlaying,    // 播放中
     ZFPlayerStateStopped,    // 停止播放
-    ZFPlayerStatePause       // 暂停播放
+    ZFPlayerStatePause,       // 暂停播放
+    ZFPlayerStateNoNetWork      //无网络
 };
 
 @interface ZFPlayerView : UIView <ZFPlayerControlViewDelagate>
@@ -121,5 +122,9 @@ typedef NS_ENUM(NSInteger, ZFPlayerState) {
   * 暂停
  */
 - (void)pause;
+
+/** 全屏 */
+- (void)_fullScreenAction;
+
 
 @end
